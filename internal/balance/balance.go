@@ -56,7 +56,15 @@ func (lb *LoadBalancer) GetBackends() []string {
 	var backends []string
 
 	for _, backend := range lb.backends {
-		backends = append(backends, fmt.Sprintf("{URL: %s, Alive: %t, Weight: %d}\n", backend.Url, backend.IsAlive(), backend.Weight))
+		backends = append(
+			backends,
+			fmt.Sprintf(
+				"{URL: %s, Alive: %t, Weight: %d}\n",
+				backend.Url,
+				backend.IsAlive(),
+				backend.Weight,
+			),
+		)
 	}
 
 	return backends
@@ -155,7 +163,9 @@ func (lb *LoadBalancer) LeastConnections() *server.Server {
 	var best *server.Server
 
 	for _, backend := range lb.backends {
-		if best == nil || atomic.LoadInt64(&backend.Connections) < atomic.LoadInt64(&best.Connections) && backend.IsAlive() {
+		if best == nil ||
+			atomic.LoadInt64(&backend.Connections) < atomic.LoadInt64(&best.Connections) &&
+				backend.IsAlive() {
 			best = backend
 		}
 	}
@@ -168,7 +178,11 @@ func (lb *LoadBalancer) WeightedLeastConnections() *server.Server {
 	var bestLoad float64
 
 	for _, backend := range lb.backends {
-		load := float64(atomic.LoadInt64(&backend.Connections)) / float64(backend.Weight)
+		load := float64(
+			atomic.LoadInt64(&backend.Connections),
+		) / float64(
+			backend.Weight,
+		)
 		if best == nil || load < bestLoad && backend.IsAlive() {
 			best = backend
 			bestLoad = load

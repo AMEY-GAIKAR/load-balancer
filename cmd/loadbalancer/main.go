@@ -13,7 +13,11 @@ import (
 const PORT = 8080
 
 func main() {
-	algo := flag.String("a", balance.RoundRobin, "load balancing algorithm, defaults to round robin")
+	algo := flag.String(
+		"a",
+		balance.RoundRobin,
+		"load balancing algorithm, defaults to round robin",
+	)
 	port := flag.Int("port", PORT, "port to set up the load balancer")
 
 	flag.Parse()
